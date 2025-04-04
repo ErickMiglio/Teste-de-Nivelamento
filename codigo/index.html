@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Busca Operadoras</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+</head>
+<body>
+  <div id="app">
+    <h1>Busca de Operadoras</h1>
+    <input type="text" v-model="searchQuery" placeholder="Digite um termo" />
+    <button @click="search">Buscar</button>
+    
+    <ul v-if="results.length">
+      <li v-for="operadora in results" :key="operadora.registro_ans">
+        {{ operadora.nome_fantasia }} - {{ operadora.cnpj }}
+      </li>
+    </ul>
+    <p v-else>Sem resultados</p>
+  </div>
+
+  <script>
+    new Vue({
+      el: "#app",
+      data: {
+        searchQuery: "",
+        results: []
+      },
+      methods: {
+        search() {
+          fetch(`http://localhost:5000/api/search?q=${encodeURIComponent(this.searchQuery)}`)
+            .then(response => response.json())
+            .then(data => {
+              this.results = data;
+            })
+            .catch(error => {
+              console.error("Erro:", error);
+            });
+        }
+      }
+    });
+  </script>
+</body>
+</html>
